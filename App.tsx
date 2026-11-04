@@ -1,10 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
+import ViewScreen from "./src/ViewScreen";
+import ButtonScreen from "./src/ButtonScreen";
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>My first mobile App</Text>
+      <ViewScreen />
+      <ButtonScreen />
       <StatusBar style="auto" />
     </View>
   );
