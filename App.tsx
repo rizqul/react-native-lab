@@ -1,17 +1,24 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import ViewScreen from "./src/ViewScreen";
 import ButtonScreen from "./src/ButtonScreen";
 import ModalScreen from "./src/ModalScreen";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ImageScreen from "./src/ImageScreen";
 
 export default function App() {
   return (
     <SafeAreaView>
-      <View>
-        <StatusBar style="auto" />
-        <ModalScreen />
-      </View>
+      <ScrollView horizontal={true}>
+        <View>
+          <StatusBar style="auto" />
+          <ImageScreen />
+          <ImageScreen />
+          <ImageScreen />
+          <ImageScreen />
+          <ImageScreen />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
