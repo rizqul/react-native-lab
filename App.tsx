@@ -1,24 +1,17 @@
 import { StatusBar } from "expo-status-bar";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import ViewScreen from "./src/ViewScreen";
-import ButtonScreen from "./src/ButtonScreen";
-import ModalScreen from "./src/ModalScreen";
 import { SafeAreaView } from "react-native-safe-area-context";
+import "./global.css";
+
 import ImageScreen from "./src/ImageScreen";
 
 export default function App() {
   return (
-    <SafeAreaView>
-      <ScrollView horizontal={true}>
-        <View>
-          <StatusBar style="auto" />
-          <ImageScreen />
-          <ImageScreen />
-          <ImageScreen />
-          <ImageScreen />
-          <ImageScreen />
-        </View>
-      </ScrollView>
+    <SafeAreaView className="flex-1">
+      <View className="flex-1 items-center justify-center bg-white">
+        <Text className="text-xl font-bold text-blue-500"> Welcome to Nativewind! </Text>
+        <ImageScreen />
+      </View>
     </SafeAreaView>
   );
 }
