@@ -1,13 +1,17 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
 
+// untuk membuat daftar screen yang kita miliki beserta params yang akan diterima
 export type RootStackParamList = {
   Login: undefined;
-  // Modal: undefined;
-  // Scroll: { email: string };
+  SignUp: undefined;
   MainTabs: NavigatorScreenParams<MainTabParamList>;
 };
 
+// untuk membuat daftar screen yang akan tertampil pada bottom tab beserta params yang akan diterima
 export type MainTabParamList = {
-  Modal: undefined;
-  Scroll: undefined;
+  Home: { email?: string };
+  Profile: undefined;
+  Product: undefined;
+  Transaction: undefined;
+  History: undefined;
 };
