@@ -5,17 +5,16 @@ import "./global.css";
 
 import ImageScreen from "./src/ImageScreen";
 import ScrollScreen from "./src/ScrollScreen";
+import SectionScreen from "./src/SectionScreen";
 
 export default function App() {
   return (
     <SafeAreaView className="flex-1">
       <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-xl font-bold text-blue-500">
-          {" "}
-          Welcome to Nativewind!{" "}
-        </Text>
+        <Text className="text-xl font-bold text-blue-500"> Welcome to Nativewind! </Text>
         {/* <ImageScreen /> */}
-        <ScrollScreen />
+        {/* <ScrollScreen /> */}
+        <SectionScreen />
       </View>
     </SafeAreaView>
   );
