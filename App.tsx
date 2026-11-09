@@ -6,6 +6,7 @@ import "./global.css";
 import ImageScreen from "./src/ImageScreen";
 import ScrollScreen from "./src/ScrollScreen";
 import SectionScreen from "./src/SectionScreen";
+import LoginScreen from "./src/LoginScreen";
 
 export default function App() {
   return (
@@ -14,7 +15,8 @@ export default function App() {
         <Text className="text-xl font-bold text-blue-500"> Welcome to Nativewind! </Text>
         {/* <ImageScreen /> */}
         {/* <ScrollScreen /> */}
-        <SectionScreen />
+        {/* <SectionScreen /> */}
+        <LoginScreen />
       </View>
     </SafeAreaView>
   );
