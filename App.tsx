@@ -4,33 +4,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import "./global.css";
 
 import LoginScreen from "./src/LoginScreen";
+import Navigation from "./src/navigation";
 
 export default function App() {
-  return (
-    <SafeAreaView className="flex-1">
-      <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-xl font-bold text-blue-500"> Welcome to Nativewind! </Text>
-        {/* <ImageScreen /> */}
-        {/* <ScrollScreen /> */}
-        {/* <SectionScreen /> */}
-        {/* <LoginScreen2 /> */}
-        <LoginScreen />
-      </View>
-    </SafeAreaView>
-  );
+  return <Navigation />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ff1",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  containerDua: {
-    flex: 1,
-    backgroundColor: "red",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

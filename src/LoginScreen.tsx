@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Button, Alert } from "react-native";
+import { View, Text, TextInput, Button, Alert, GestureResponderEvent } from "react-native";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +19,8 @@ const LoginScreen = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = () => {
+  const onSubmit = (data: { email: string; password: string }) => {
+    console.log(data);
     Alert.alert("berhasil login");
   };
 
@@ -51,7 +52,7 @@ const LoginScreen = () => {
         {errors.password && <Text className="text-sm text-red-700">{errors.password.message}</Text>}
       </View>
 
-      <Button title="Login" onPress={() => handleSubmit(onSubmit)()} disabled={isSubmitting} />
+      <Button title="Login" onPress={handleSubmit(onSubmit) as (e?: GestureResponderEvent) => void} disabled={isSubmitting} />
     </View>
   );
 };
