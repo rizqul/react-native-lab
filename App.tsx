@@ -3,9 +3,6 @@ import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import "./global.css";
 
-import ImageScreen from "./src/ImageScreen";
-import ScrollScreen from "./src/ScrollScreen";
-import SectionScreen from "./src/SectionScreen";
 import LoginScreen from "./src/LoginScreen";
 
 export default function App() {
@@ -16,6 +13,7 @@ export default function App() {
         {/* <ImageScreen /> */}
         {/* <ScrollScreen /> */}
         {/* <SectionScreen /> */}
+        {/* <LoginScreen2 /> */}
         <LoginScreen />
       </View>
     </SafeAreaView>
