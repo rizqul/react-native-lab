@@ -1,8 +1,14 @@
-import { View, Text, ScrollView, Image, FlatList } from "react-native";
+import { View, Text, ScrollView, Image, FlatList, Alert } from "react-native";
 import { Menus } from "./data/menus";
 import Cards from "./components/Cards";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { MainTabParamList, RootStackParamList } from "./utils/types/navigation";
+import { ro } from "zod/v4/locales/index.js";
 
-const ScrollScreen = () => {
+type Props = NativeStackScreenProps<MainTabParamList, "Scroll">;
+
+const ScrollScreen = ({ navigation, route }: Props) => {
+  const email = route.params;
   return (
     <View className="flex-1">
       {/* scroll view */}
@@ -20,6 +26,7 @@ const ScrollScreen = () => {
 
       {/* flat list */}
       <Text className="mt-8">Ini adalah flat list</Text>
+      {/* <Text className="mt-8">Email : {email.email} </Text> */}
       <FlatList
         // horizontal
         data={Menus}

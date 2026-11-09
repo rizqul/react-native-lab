@@ -2,6 +2,10 @@ import { View, Text, TextInput, Button, Alert, GestureResponderEvent } from "rea
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "./utils/types/navigation";
+
+type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
 const loginSchema = z.object({
   email: z.email(),
@@ -10,7 +14,7 @@ const loginSchema = z.object({
 
 type FormValues = z.infer<typeof loginSchema>;
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }: Props) => {
   const {
     control,
     handleSubmit,
@@ -19,9 +23,16 @@ const LoginScreen = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: { email: string; password: string }) => {
-    console.log(data);
-    Alert.alert("berhasil login");
+  const onSubmit = () => {
+    // navigation.navigate("Scroll");
+
+    // navigation.push("Scroll", { email: "lala@coba.com" });
+
+    // reset history
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "MainTabs" }],
+    });
   };
 
   return (
