@@ -1,7 +1,6 @@
-import { View, Text, Button } from "react-native";
-import React from "react";
+import { View, Text } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { MainTabParamList, RootStackParamList } from "../types/navigation";
+import { MainTabParamList } from "../../utils/types/navigation";
 
 type Props = NativeStackScreenProps<MainTabParamList, "History">;
 

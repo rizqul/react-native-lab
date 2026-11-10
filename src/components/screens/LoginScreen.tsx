@@ -1,22 +1,24 @@
-import { View, Text, TextInput, Alert, Image, ActivityIndicator, Pressable, GestureResponderEvent } from "react-native";
+import { Alert, Pressable, Text, View } from "react-native";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Entypo } from "@expo/vector-icons";
+import { useState } from "react";
 import { RootStackParamList } from "../../utils/types/navigation";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { useState } from "react";
 import { setError, setLoading } from "../../store/slice/uiSlice";
 import { login } from "../../service/auth.service";
 import { LoginForm } from "../../utils/types/auth";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Entypo } from "@expo/vector-icons";
+import { AuthButton } from "../auth/AuthButton";
+import { AuthScreenLayout } from "../auth/AuthScreenLayout";
+import { AuthTextField } from "../auth/AuthTextField";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
 const loginSchema = z.object({
-  email: z.email("Format email tidak valid"),
-  password: z.string().min(8, "Password minimal 8 karakter"),
+  email: z.email("Enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 type FormValues = z.infer<typeof loginSchema>;
@@ -25,125 +27,57 @@ const LoginScreen = ({ navigation }: Props) => {
   const dispatch = useAppDispatch();
   const loading = useAppSelector((state) => state.ui.isLoading);
   const [showPassword, setShowPassword] = useState(false);
-
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-    mode: "onSubmit",
+    defaultValues: { email: "", password: "" },
   });
 
   const onSubmit = async (values: LoginForm) => {
     try {
       dispatch(setLoading(true));
       const response = await login(values);
-
-      navigation.reset({
-        index: 0,
-        routes: [
-          {
-            name: "MainTabs",
-            params: {
-              screen: "Home",
-              params: { email: response.customer.email },
-            },
-          },
-        ],
-      });
+      navigation.reset({ index: 0, routes: [{ name: "MainTabs", params: { screen: "Home", params: { email: response.customer.email } } }] });
     } catch (error: any) {
-      console.error("Login gagal:", error);
-
-      const errorMessage = error.response?.data?.message || error.message || "Login gagal. Silakan coba lagi.";
-
-      dispatch(setError(errorMessage));
-      Alert.alert("Login Gagal ", errorMessage);
+      const message = error.response?.data?.message || error.message || "Unable to sign in. Please try again.";
+      dispatch(setError(message));
+      Alert.alert("Sign in failed", message);
     } finally {
       dispatch(setLoading(false));
     }
   };
 
   return (
-    <SafeAreaView className="flex-1">
-      <View className="flex-1 overflow-hidden">
-        {/* Background Image */}
-        <Image source={require("../../../assets/softBG.jpg")} resizeMode="cover" className="absolute inset-0 w-full h-full" />
-
-        {/* Header */}
-        <View className="justify-center items-center mt-28 gap-1 mb-6">
-          <Text className="font-bold text-[#DA3D20] text-4xl">Log In</Text>
-
-          <Text className="text-[#DA3D20] text-md">Please sign in to your existing account</Text>
-        </View>
-
-        {/* Form Container */}
-        <View className="mt-12 bg-white w-full rounded-xl px-8 py-8 flex-1">
-          {/* Email */}
-          <Text className="font-bold text-lg mb-1 text-[#DA3D20]">Email</Text>
-
-          <Controller
-            control={control}
-            name="email"
-            render={({ field: { value, onChange, onBlur } }) => (
-              <View>
-                <View className="flex-row items-center bg-slate-400 px-6 py-3 rounded-md">
-                  <TextInput placeholder="example@email.com" value={value} onChangeText={onChange} onBlur={onBlur} autoCapitalize="none" keyboardType="email-address" className="flex-1 text-md py-3 text-white" placeholderTextColor="#fff" />
-                </View>
-              </View>
-            )}
-          />
-
-          {errors.email && <Text className="text-red-600 text-xs px-2 mt-1">{errors.email.message}</Text>}
-
-          {/* Password */}
-          <Text className="font-bold text-lg mb-1 mt-5 text-[#DA3D20]">Password</Text>
-
+    <AuthScreenLayout title="Welcome back" subtitle="Sign in to continue to your account.">
+      <View className="flex-1 justify-between">
+        <View>
+          <Controller control={control} name="email" render={({ field: { value, onChange, onBlur } }) => <AuthTextField label="Email" value={value} onChangeText={onChange} onBlur={onBlur} placeholder="you@example.com" error={errors.email?.message} keyboardType="email-address" autoCapitalize="none" />} />
           <Controller
             control={control}
             name="password"
             render={({ field: { value, onChange, onBlur } }) => (
-              <View className="flex-row items-center bg-slate-400 px-6 py-3 rounded-md">
-                <TextInput placeholder="********" value={value} onChangeText={onChange} onBlur={onBlur} placeholderTextColor="#fff" secureTextEntry={!showPassword} className="flex-1 text-md text-white mr-4" />
-
-                <Pressable onPress={() => setShowPassword(!showPassword)}>
-                  <Entypo name={showPassword ? "eye-with-line" : "eye"} size={22} color="white" />
-                </Pressable>
-              </View>
+              <AuthTextField
+                label="Password"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                placeholder="Enter your password"
+                error={errors.password?.message}
+                secureTextEntry={!showPassword}
+                accessory={<Pressable className="p-2" onPress={() => setShowPassword((visible) => !visible)} accessibilityLabel={showPassword ? "Hide password" : "Show password"}><Entypo name={showPassword ? "eye-with-line" : "eye"} size={20} color="#64748B" /></Pressable>}
+              />
             )}
           />
-
-          {errors.password && <Text className="text-red-600 text-xs px-2 mt-1">{errors.password.message}</Text>}
-
-          {/* Button Login */}
-          <Pressable className="w-full bg-[#DA3D20] px-3 py-2 rounded-md justify-center mt-10 mb-3" onPress={handleSubmit(onSubmit) as (e?: GestureResponderEvent) => void} disabled={loading || isSubmitting}>
-            <Text className="font-bold text-white text-center text-lg">Log In</Text>
-          </Pressable>
-
-          {/* Footer */}
-          <View className="justify-center items-center gap-5 mt-9">
-            <View className="justify-center items-center flex-row gap-2">
-              <Text>Don't have an account?</Text>
-              <Pressable onPress={() => navigation.navigate("SignUp")}>
-                <Text className="font-bold text-[#DA3D20]">Sign Up</Text>
-              </Pressable>
-            </View>
-
-            <Text>Or</Text>
-
-            <View className="justify-center flex-row gap-3">
-              <Entypo name="facebook-with-circle" size={48} color="orange" />
-              <Entypo name="twitter-with-circle" size={48} color="orange" />
-              <Entypo name="instagram-with-circle" size={48} color="orange" />
-            </View>
-          </View>
+        </View>
+        <View className="gap-5">
+          <AuthButton onPress={handleSubmit(onSubmit)} disabled={loading || isSubmitting}>{loading || isSubmitting ? "Signing in..." : "Sign in"}</AuthButton>
+          <View className="flex-row justify-center"><Text className="text-sm text-slate-500">New here? </Text><Pressable onPress={() => navigation.navigate("SignUp")}><Text className="text-sm font-bold text-[#E85D45]">Create an account</Text></Pressable></View>
         </View>
       </View>
-    </SafeAreaView>
+    </AuthScreenLayout>
   );
 };
 

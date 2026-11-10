@@ -1,249 +1,60 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, Pressable, ScrollView, KeyboardAvoidingView, Platform, ImageBackground, Alert, GestureResponderEvent } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
-import { useForm, Controller } from "react-hook-form";
-import { RegisterForm } from "../../utils/types/auth";
+import { Alert, Pressable, Text, View } from "react-native";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Ionicons } from "@expo/vector-icons";
+import { RegisterForm } from "../../utils/types/auth";
 import { RootStackParamList } from "../../utils/types/navigation";
+import { AuthButton } from "../auth/AuthButton";
+import { AuthScreenLayout } from "../auth/AuthScreenLayout";
+import { AuthTextField } from "../auth/AuthTextField";
 
 type Props = NativeStackScreenProps<RootStackParamList, "SignUp">;
 
 export default function SignUpScreen({ navigation }: Props) {
   const [agree, setAgree] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
   const {
     control,
     handleSubmit,
     setError,
     clearErrors,
     formState: { errors, isSubmitting },
-  } = useForm<RegisterForm>({
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirm: "",
-    },
-  });
+  } = useForm<RegisterForm>({ defaultValues: { name: "", email: "", password: "", confirm: "" } });
 
-  const onSubmit = async (values: RegisterForm) => {
+  const onSubmit = async () => {
     if (!agree) {
-      setError("confirm", {
-        message: "You must agree before creating an account",
-      });
+      setError("confirm", { message: "Please accept the terms to continue" });
       return;
     }
-
-    Alert.alert("Success", "Account created!");
-    console.log(values);
+    Alert.alert("Registration unavailable", "Connect this form to your registration API before creating accounts.");
   };
 
   return (
-    <KeyboardAvoidingView className="flex-1" behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <SafeAreaView className="flex-1">
-        <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-          <View className="flex-1">
-            {/* Background */}
-            <ImageBackground
-              source={{
-                uri: "https://m.media-amazon.com/images/I/21u8gLR-HeL._AC_.jpg",
-              }}
-              resizeMode="cover"
-              className="h-64 w-full"
-              imageStyle={{
-                width: "100%",
-                height: "100%",
-              }}
-            >
-              <View className="flex-1" />
-            </ImageBackground>
-
-            {/* Panel putih */}
-            <View className="flex-1 -mt-20 rounded-t-[46px] bg-white px-6 pt-8 pb-10 shadow-lg">
-              <View className="flex-1 justify-between">
-                {/* Title */}
-                <View>
-                  <Text className="text-3xl font-bold text-gray-900 mb-6">Sign up</Text>
-
-                  {/* FULL NAME */}
-                  <View className="mb-4">
-                    <Text className="text-sm font-medium text-gray-700 mb-1">Full Name</Text>
-
-                    <Controller
-                      control={control}
-                      name="name"
-                      rules={{
-                        required: "Full name is required",
-                        minLength: {
-                          value: 3,
-                          message: "Minimum 3 characters",
-                        },
-                      }}
-                      render={({ field: { onChange, value } }) => (
-                        <View className={`flex-row items-center pb-2 border-b ${errors.name ? "border-red-500" : "border-[#f59b95]"}`}>
-                          <Ionicons name="person-outline" size={18} color={errors.name ? "#ef4444" : "#f59b95"} style={{ marginRight: 8 }} />
-
-                          <TextInput
-                            value={value}
-                            onChangeText={(val) => {
-                              onChange(val);
-                              clearErrors("name");
-                            }}
-                            placeholder="Your full name"
-                            placeholderTextColor="#d1d5db"
-                            className="flex-1 text-base text-gray-800"
-                          />
-                        </View>
-                      )}
-                    />
-
-                    {errors.name && <Text className="text-xs text-red-500 mt-1">{errors.name.message}</Text>}
-                  </View>
-
-                  {/* EMAIL */}
-                  <View className="mb-4">
-                    <Text className="text-sm font-medium text-gray-700 mb-1">Email</Text>
-
-                    <Controller
-                      control={control}
-                      name="email"
-                      rules={{
-                        required: "Email is required",
-                        pattern: {
-                          value: /\S+@\S+\.\S+/,
-                          message: "Email format invalid",
-                        },
-                      }}
-                      render={({ field: { onChange, value } }) => (
-                        <View className={`flex-row items-center pb-2 border-b ${errors.email ? "border-red-500" : "border-[#f59b95]"}`}>
-                          <Ionicons name="mail-outline" size={18} color={errors.email ? "#ef4444" : "#f59b95"} style={{ marginRight: 8 }} />
-
-                          <TextInput
-                            value={value}
-                            onChangeText={(val) => {
-                              onChange(val);
-                              clearErrors("email");
-                            }}
-                            placeholder="demo@email.com"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            placeholderTextColor="#d1d5db"
-                            className="flex-1 text-base text-gray-800"
-                          />
-                        </View>
-                      )}
-                    />
-
-                    {errors.email && <Text className="text-xs text-red-500 mt-1">{errors.email.message}</Text>}
-                  </View>
-
-                  {/* PASSWORD */}
-                  <View className="mb-4">
-                    <Text className="text-sm font-medium text-gray-700 mb-1">Password</Text>
-
-                    <Controller
-                      control={control}
-                      name="password"
-                      rules={{
-                        required: "Password is required",
-                        minLength: {
-                          value: 6,
-                          message: "Minimum 6 characters",
-                        },
-                      }}
-                      render={({ field: { onChange, value } }) => (
-                        <View className={`flex-row items-center pb-2 border-b ${errors.password ? "border-red-500" : "border-[#f59b95]"}`}>
-                          <Ionicons name="lock-closed-outline" size={18} color={errors.password ? "#ef4444" : "#f59b95"} style={{ marginRight: 8 }} />
-
-                          <TextInput
-                            value={value}
-                            onChangeText={(val) => {
-                              onChange(val);
-                              clearErrors("password");
-                            }}
-                            placeholder="Create password"
-                            secureTextEntry
-                            placeholderTextColor="#d1d5db"
-                            className="flex-1 text-base text-gray-800"
-                          />
-                        </View>
-                      )}
-                    />
-
-                    {errors.password && <Text className="text-xs text-red-500 mt-1">{errors.password.message}</Text>}
-                  </View>
-
-                  {/* CONFIRM */}
-                  <View className="mb-2">
-                    <Text className="text-sm font-medium text-gray-700 mb-1">Confirm Password</Text>
-
-                    <Controller
-                      control={control}
-                      name="confirm"
-                      rules={{
-                        required: "Confirm password is required",
-                        validate: (value, formValues) => value === formValues.password || "Passwords do not match",
-                      }}
-                      render={({ field: { onChange, value } }) => (
-                        <View className={`flex-row items-center pb-2 border-b ${errors.confirm ? "border-red-500" : "border-[#f59b95]"}`}>
-                          <Ionicons name="lock-closed-outline" size={18} color={errors.confirm ? "#ef4444" : "#f59b95"} style={{ marginRight: 8 }} />
-
-                          <TextInput
-                            value={value}
-                            onChangeText={(val) => {
-                              onChange(val);
-                              clearErrors("confirm");
-                            }}
-                            placeholder="Re-enter password"
-                            secureTextEntry
-                            placeholderTextColor="#d1d5db"
-                            className="flex-1 text-base text-gray-800"
-                          />
-                        </View>
-                      )}
-                    />
-
-                    {errors.confirm && <Text className="text-xs text-red-500 mt-1">{errors.confirm.message}</Text>}
-                  </View>
-
-                  {/* Agree to Terms */}
-                  <View className="flex-row items-center justify-between mt-4">
-                    <Pressable
-                      className="flex-row items-center"
-                      onPress={() => {
-                        setAgree((prev) => !prev);
-                        clearErrors("confirm");
-                      }}
-                    >
-                      <View className={`w-4 h-4 mr-2 rounded-[4px] border ${agree ? "bg-[#f59b95] border-[#f59b95]" : "border-gray-300"} items-center justify-center`}>{agree && <Ionicons name="checkmark" size={12} color="white" />}</View>
-
-                      <Text className="text-xs text-gray-700">I agree to Terms & Privacy</Text>
-                    </Pressable>
-                  </View>
-
-                  {!agree && <Text className="text-xs text-red-500 mt-1">You must agree before continuing</Text>}
-                </View>
-
-                {/* Button bottom */}
-                <View className="mt-8">
-                  <Pressable className={`py-3 rounded-2xl items-center mb-4 ${isSubmitting ? "bg-[#fbbfbd]" : "bg-[#f59b95]"}`} disabled={isSubmitting} onPress={handleSubmit(onSubmit) as (e?: GestureResponderEvent) => void}>
-                    <Text className="text-white font-semibold text-base">{isSubmitting ? "Loading..." : "Create Account"}</Text>
-                  </Pressable>
-
-                  <View className="flex-row justify-center">
-                    <Text className="text-xs text-gray-500">Already have an account?</Text>
-
-                    <Pressable onPress={() => navigation.navigate("Login")}>
-                      <Text className="text-xs font-semibold text-[#f59b95] ml-1">Sign in</Text>
-                    </Pressable>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+    <AuthScreenLayout title="Create account" subtitle="Set up your account in a few quick steps.">
+      <View className="flex-1 justify-between">
+        <View>
+          <Controller control={control} name="name" rules={{ required: "Full name is required", minLength: { value: 3, message: "Use at least 3 characters" } }} render={({ field: { value, onChange, onBlur } }) => <AuthTextField label="Full name" value={value} onChangeText={(text) => { onChange(text); clearErrors("name"); }} onBlur={onBlur} placeholder="Your full name" error={errors.name?.message} />} />
+          <Controller control={control} name="email" rules={{ required: "Email is required", pattern: { value: /\S+@\S+\.\S+/, message: "Enter a valid email address" } }} render={({ field: { value, onChange, onBlur } }) => <AuthTextField label="Email" value={value} onChangeText={(text) => { onChange(text); clearErrors("email"); }} onBlur={onBlur} placeholder="you@example.com" error={errors.email?.message} keyboardType="email-address" autoCapitalize="none" />} />
+          <Controller
+            control={control}
+            name="password"
+            rules={{ required: "Password is required", minLength: { value: 8, message: "Password must be at least 8 characters" } }}
+            render={({ field: { value, onChange, onBlur } }) => (
+              <AuthTextField label="Password" value={value} onChangeText={(text) => { onChange(text); clearErrors("password"); }} onBlur={onBlur} placeholder="Create a password" error={errors.password?.message} secureTextEntry={!showPassword} accessory={<Pressable className="p-2" onPress={() => setShowPassword((visible) => !visible)} accessibilityLabel={showPassword ? "Hide password" : "Show password"}><Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={20} color="#64748B" /></Pressable>} />
+            )}
+          />
+          <Controller control={control} name="confirm" rules={{ required: "Please confirm your password", validate: (value, values) => value === values.password || "Passwords do not match" }} render={({ field: { value, onChange, onBlur } }) => <AuthTextField label="Confirm password" value={value} onChangeText={(text) => { onChange(text); clearErrors("confirm"); }} onBlur={onBlur} placeholder="Repeat your password" error={errors.confirm?.message} secureTextEntry={!showPassword} />} />
+          <Pressable className="mt-1 flex-row items-center" onPress={() => { setAgree((current) => !current); clearErrors("confirm"); }} accessibilityRole="checkbox" accessibilityState={{ checked: agree }}>
+            <View className={`mr-3 h-5 w-5 items-center justify-center rounded border ${agree ? "border-[#E85D45] bg-[#E85D45]" : "border-slate-300"}`}>{agree ? <Ionicons name="checkmark" size={14} color="white" /> : null}</View>
+            <Text className="flex-1 text-sm text-slate-600">I agree to the Terms and Privacy Policy</Text>
+          </Pressable>
+        </View>
+        <View className="gap-5 pt-8">
+          <AuthButton onPress={handleSubmit(onSubmit)} disabled={isSubmitting}>{isSubmitting ? "Creating account..." : "Create account"}</AuthButton>
+          <View className="flex-row justify-center"><Text className="text-sm text-slate-500">Already have an account? </Text><Pressable onPress={() => navigation.navigate("Login")}><Text className="text-sm font-bold text-[#E85D45]">Sign in</Text></Pressable></View>
+        </View>
+      </View>
+    </AuthScreenLayout>
   );
 }
